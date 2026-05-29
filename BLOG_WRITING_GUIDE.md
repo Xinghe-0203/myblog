@@ -2,7 +2,93 @@
 
 本指南将帮助你快速掌握如何使用 Firefly 模板编写和发布博客文章。
 
-## 1. 创建文章
+## 目录
+
+- [项目概述](#项目概述)
+- [快速开始](#快速开始)
+- [创建文章](#创建文章)
+- [文章 Front-matter](#文章-front-matter)
+- [Markdown 基础语法](#markdown-基础语法)
+- [代码块](#代码块)
+- [高级功能](#高级功能)
+- [Mermaid 图表](#mermaid-图表)
+- [PlantUML 图表](#plantuml-图表)
+- [数学公式 KaTeX](#数学公式-katex)
+- [文章加密](#文章加密)
+- [草稿功能](#草稿功能)
+- [写作技巧](#写作技巧)
+- [预览和发布](#预览和发布)
+- [部署指南](#部署指南)
+- [常见问题](#常见问题)
+
+---
+
+## 项目概述
+
+**Firefly** 是一款基于 [Astro](https://astro.build/) 框架和 [Fuwari](https://github.com/saicaca/fuwari) 模板开发的清新美观且现代化个人博客主题模板。
+
+### 技术栈
+
+- **Astro** 6.x - 静态站点生成器
+- **Tailwind CSS** 4.x - 实用优先的 CSS 框架
+- **Svelte** - 交互式组件
+- **TypeScript** - 类型安全
+- **Pagefind** - 客户端搜索
+
+### 主要特性
+
+- 🚀 基于 Astro 的超快加载速度和 SEO 优化
+- 🎨 简洁美观的界面，支持自定义主题色
+- 📱 完美的响应式体验，移动端专项优化
+- 🔧 高度可配置，大部分功能模块均可通过配置文件自定义
+- 🌐 支持多语言（简体中文、繁体中文、英文、日文、俄文）
+- 🔍 基于 Pagefind 的全文搜索
+- 📝 丰富的 Markdown 扩展功能
+
+---
+
+## 快速开始
+
+### 环境要求
+
+- **Node.js** ≥ 22
+- **pnpm** ≥ 9
+
+### 安装步骤
+
+```bash
+# 1. 克隆仓库
+git clone https://github.com/CuteLeaf/Firefly.git
+cd Firefly
+
+# 2. 安装 pnpm（如果没有安装）
+npm install -g pnpm
+
+# 3. 安装项目依赖
+pnpm install
+
+# 4. 启动开发服务器
+pnpm dev
+```
+
+博客将在 `http://localhost:4321` 可用。
+
+### 常用命令
+
+| 命令 | 说明 |
+|------|------|
+| `pnpm install` | 安装依赖 |
+| `pnpm dev` | 启动本地开发服务器 |
+| `pnpm build` | 构建网站至 `./dist/` |
+| `pnpm preview` | 本地预览已构建的网站 |
+| `pnpm check` | 检查代码中的错误 |
+| `pnpm format` | 使用 Biome 格式化代码 |
+| `pnpm new-post <filename>` | 创建新文章 |
+| `pnpm astro --help` | 显示 Astro CLI 帮助 |
+
+---
+
+## 创建文章
 
 ### 文章存放位置
 
@@ -23,12 +109,34 @@ src/content/posts/
 在项目根目录运行：
 
 ```bash
-pnpm run new-post
+pnpm new-post <filename>
 ```
 
-## 2. 文章 Front-matter（必填）
+例如：
 
-每篇文章开头必须包含 YAML front-matter，用于配置文章元数据：
+```bash
+pnpm new-post my-awesome-post
+```
+
+### 文章目录结构建议
+
+```
+src/content/posts/
+└── my-awesome-post/
+    ├── index.md              # 文章内容
+    ├── cover.avif            # 封面图
+    └── images/               # 文章配图目录
+        ├── screenshot1.avif
+        └── screenshot2.avif
+```
+
+---
+
+## 文章 Front-matter
+
+每篇文章开头必须包含 YAML front-matter，用于配置文章元数据。
+
+### 基础示例
 
 ```yaml
 ---
@@ -56,8 +164,13 @@ draft: false
 | `draft` | 是否为草稿（不显示） | 可选 | `true` 或 `false` |
 | `slug` | 自定义 URL 路径 | 可选 | `my-custom-url` |
 | `author` | 文章作者 | 可选 | `Xinghe` |
+| `lang` | 文章语言（与网站语言不同时设置） | 可选 | `zh-CN`、`en`、`ja` |
+| `comment` | 是否允许评论 | 可选 | `true` 或 `false` |
 | `password` | 文章密码加密 | 可选 | `123456` |
 | `passwordHint` | 密码提示 | 可选 | `提示：我的生日` |
+| `licenseName` | 许可证名称 | 可选 | `未授权`、`MIT` |
+| `licenseLink` | 许可证链接 | 可选 | `https://...` |
+| `sourceLink` | 原文链接 | 可选 | `https://...` |
 
 ### 封面图配置
 
@@ -73,6 +186,9 @@ image: "/assets/images/cover.jpg"
 # 3. 相对路径（相对于文章文件）
 image: "./cover.jpg"
 image: "./images/cover.avif"
+
+# 4. 使用随机封面图
+image: "api"
 ```
 
 ### URL Slug 配置
@@ -93,7 +209,27 @@ slug: hello-world
 - 避免特殊字符和空格
 - 发布后尽量不要修改，以免影响 SEO
 
-## 3. Markdown 基础语法
+### 语言配置
+
+如果文章语言与 `siteConfig.ts` 中的网站语言不同，需要设置 `lang` 属性：
+
+```yaml
+---
+title: Hello World
+lang: en  # 英文文章
+---
+```
+
+支持的语言代码：
+- `zh-CN` - 简体中文
+- `zh-TW` - 繁体中文
+- `en` - 英文
+- `ja` - 日文
+- `ru` - 俄文
+
+---
+
+## Markdown 基础语法
 
 ### 标题
 
@@ -101,6 +237,9 @@ slug: hello-world
 # 一级标题
 ## 二级标题
 ### 三级标题
+#### 四级标题
+##### 五级标题
+###### 六级标题
 ```
 
 ### 文本格式
@@ -108,6 +247,7 @@ slug: hello-world
 ```markdown
 **粗体文本**
 *斜体文本*
+***粗斜体文本***
 ~~删除线~~
 `行内代码`
 ```
@@ -127,11 +267,16 @@ slug: hello-world
 - 项目一
 - 项目二
   - 子项目
+  - 子项目
 
 # 有序列表
 1. 第一步
 2. 第二步
 3. 第三步
+
+# 任务列表
+- [x] 已完成任务
+- [ ] 未完成任务
 ```
 
 ### 引用
@@ -145,9 +290,9 @@ slug: hello-world
 ### 表格
 
 ```markdown
-| 列1 | 列2 | 列3 |
-|-----|-----|-----|
-| 内容 | 内容 | 内容 |
+| 左对齐 | 居中对齐 | 右对齐 |
+|:-------|:--------:|-------:|
+| 内容   |   内容   |   内容 |
 ```
 
 ### 分割线
@@ -156,7 +301,16 @@ slug: hello-world
 ---
 ```
 
-## 4. 代码块
+### 自动链接
+
+```markdown
+<http://example.com/>
+<address@example.com>
+```
+
+---
+
+## 代码块
 
 ### 基础代码块
 
@@ -187,6 +341,15 @@ function hello() {
 ```
 ````
 
+### 自定义起始行号
+
+````markdown
+```js showLineNumbers startLineNumber=10
+console.log('这是第 10 行')
+console.log('这是第 11 行')
+```
+````
+
 ### 代码高亮标记
 
 ````markdown
@@ -200,16 +363,115 @@ const d = 4
 ```
 ````
 
+### 选择行标记类型 (mark, ins, del)
+
+````markdown
+```js title="example.js" del={2} ins={3-4} {6}
+function demo() {
+  console.log('此行标记为已删除')
+  // 此行和下一行标记为已插入
+  console.log('这是第二个插入行')
+
+  return '此行使用中性默认标记类型'
+}
+```
+````
+
+### 为行标记添加标签
+
+````markdown
+```jsx {"1":5} del={"2":7-8} ins={"3":10-12}
+<button
+  role="button"
+  {...props}
+  value={value}
+  className={buttonClassName}
+  disabled={disabled}
+  active={active}
+>
+  {children &&
+    !active &&
+    (typeof children === 'string' ? <span>{children}</span> : children)}
+</button>
+```
+````
+
+### 使用类似 diff 的语法
+
+````markdown
+```diff
++此行将标记为已插入
+-此行将标记为已删除
+这是常规行
+```
+````
+
+### 结合语法高亮和 diff 语法
+
+````markdown
+```diff lang="js"
+  function thisIsJavaScript() {
+    // 整个块都会以 JavaScript 高亮显示，
+    // 并且我们仍然可以为其添加 diff 标记！
+-   console.log('要删除的旧代码')
++   console.log('新的闪亮代码！')
+  }
+```
+````
+
+### 标记行内的单独文本
+
+````markdown
+```js "given text"
+function demo() {
+  // 标记行内的任何给定文本
+  return '支持给定文本的多个匹配项';
+}
+```
+````
+
+### 正则表达式标记
+
+````markdown
+```ts /ye[sp]/
+console.log('单词 yes 和 yep 将被标记。')
+```
+````
+
 ### 折叠代码块
 
 ````markdown
-```js collapse={1-3}
-// 这部分会被折叠
-import { something } from 'module'
-const config = {}
+```js collapse={1-5, 12-14}
+// 所有这些样板设置代码将被折叠
+import { someBoilerplateEngine } from '@example/some-boilerplate'
+import { evenMoreBoilerplate } from '@example/even-more-boilerplate'
 
-// 这部分默认展开
-console.log('Hello!')
+const engine = someBoilerplateEngine(evenMoreBoilerplate())
+
+// 这部分代码默认可见
+engine.doSomething(1, 2, 3, calcFn)
+
+function calcFn() {
+  // 您可以有多个折叠部分
+  const a = 1
+  const b = 2
+  const c = a + b
+
+  // 这将保持可见
+  console.log(`计算结果: ${a} + ${b} = ${c}`)
+  return c
+}
+```
+````
+
+### 自动换行
+
+````markdown
+```js wrap
+// 启用换行的示例
+function getLongString() {
+  return '这是一个非常长的字符串，除非容器极宽，否则很可能无法适应可用空间'
+}
 ```
 ````
 
@@ -217,12 +479,41 @@ console.log('Hello!')
 
 ````markdown
 ```bash
-npm install
-npm run dev
+echo "此终端框架没有标题"
+```
+
+```powershell title="PowerShell 终端示例"
+Write-Output "这个有标题!"
 ```
 ````
 
-## 5. 高级功能
+### 覆盖框架类型
+
+````markdown
+```sh frame="none"
+echo "看，没有框架!"
+```
+
+```ps frame="code" title="PowerShell Profile.ps1"
+# 如果不覆盖，这将是一个终端框架
+function Watch-Tail { Get-Content -Tail 20 -Wait $args }
+New-Alias tail Watch-Tail
+```
+````
+
+### 渲染 ANSI 转义序列
+
+````markdown
+```ansi
+[1;4mStandard ANSI colors:[0m
+- Dimmed:     [2;30m Black [2;31m Red [2;32m Green [2;33m Yellow [2;34m Blue [2;35m Magenta [2;36m Cyan [2;37m White [0m
+- Foreground: [30m Black [31m Red [32m Green [33m Yellow [34m Blue [35m Magenta [36m Cyan [37m White [0m
+```
+````
+
+---
+
+## 高级功能
 
 ### GitHub 仓库卡片
 
@@ -230,7 +521,15 @@ npm run dev
 ::github{repo="CuteLeaf/Firefly"}
 ````
 
+显示效果：
+
+::github{repo="CuteLeaf/Firefly"}
+
 ### 提醒框（Admonitions）
+
+Firefly 支持三种风格的提醒框主题：`GitHub`、`Obsidian` 和 `VitePress`。可以在 `src/config/siteConfig.ts` 中配置。
+
+#### GitHub 主题风格（默认）
 
 ```markdown
 > [!NOTE] 注意
@@ -245,14 +544,150 @@ npm run dev
 > [!WARNING] 警告
 > 这是警告信息
 
-> [!CAUTION]  caution
-> 这是 caution 信息
+> [!CAUTION] 注意
+> 这是注意事项
+
+> [!NOTE] 自定义标题
+> 这是一个带有自定义标题的示例。
+```
+
+#### Obsidian 主题风格
+
+Obsidian 风格支持非常丰富的类型：
+
+```markdown
+> [!NOTE] NOTE
+> 通用的笔记块。
+
+> [!ABSTRACT] ABSTRACT
+> 文章的摘要。
+
+> [!SUMMARY] SUMMARY
+> 文章的总结（同 Abstract）。
+
+> [!TLDR] TLDR
+> 太长不看（同 Abstract）。
+
+> [!INFO] INFO
+> 提供额外信息。
+
+> [!TODO] TODO
+> 需要完成的事项。
+
+> [!TIP] TIP
+> 实用技巧或提示。
+
+> [!HINT] HINT
+> 暗示（同 Tip）。
+
+> [!SUCCESS] SUCCESS
+> 操作成功。
+
+> [!CHECK] CHECK
+> 检查通过（同 Success）。
+
+> [!DONE] DONE
+> 已完成（同 Success）。
+
+> [!QUESTION] QUESTION
+> 提出问题。
+
+> [!HELP] HELP
+> 寻求帮助（同 Question）。
+
+> [!FAQ] FAQ
+> 常见问题（同 Question）。
+
+> [!WARNING] WARNING
+> 警告信息。
+
+> [!CAUTION] CAUTION
+> 注意事项（同 Warning）。
+
+> [!ATTENTION] ATTENTION
+> 引起注意（同 Warning）。
+
+> [!FAILURE] FAILURE
+> 操作失败。
+
+> [!FAIL] FAIL
+> 失败（同 Failure）。
+
+> [!MISSING] MISSING
+> 缺失内容（同 Failure）。
+
+> [!DANGER] DANGER
+> 危险操作警告。
+
+> [!ERROR] ERROR
+> 错误信息（同 Danger）。
+
+> [!BUG] BUG
+> 报告软件缺陷。
+
+> [!EXAMPLE] EXAMPLE
+> 展示一个例子。
+
+> [!QUOTE] QUOTE
+> 引用一段话。
+
+> [!CITE] CITE
+> 引证（同 Quote）。
+```
+
+#### VitePress 主题风格
+
+```markdown
+> [!NOTE] NOTE
+> 对应 GitHub 的 Note。
+
+> [!TIP] TIP
+> 对应 GitHub 的 Tip。
+
+> [!IMPORTANT] IMPORTANT
+> 对应 GitHub 的 Important。
+
+> [!WARNING] WARNING
+> 对应 GitHub 的 Warning。
+
+> [!CAUTION] CAUTION
+> 对应 GitHub 的 Caution。
+```
+
+#### Docusaurus 风格语法
+
+```markdown
+:::note
+突出显示用户应该考虑的信息。
+:::
+
+:::tip
+可选信息，帮助用户更成功。
+:::
+
+:::important
+用户成功所必需的关键信息。
+:::
+
+:::warning
+由于潜在风险需要用户立即注意的关键内容。
+:::
+
+:::caution
+行动的负面潜在后果。
+:::
+
+:::tip[自定义标题]
+可选信息，帮助用户更成功。
+:::
 ```
 
 ### 剧透（Spoiler）
 
 ```markdown
 这是一个剧透内容：:spoiler[这里是隐藏的内容]！
+
+支持 **Markdown** 语法：:spoiler[**粗体** 和 *斜体*]
 ```
 
 ### 图片画廊网格
@@ -265,48 +700,13 @@ npm run dev
 [/grid]
 ```
 
-支持 2-4 张图片并排展示，自动对齐高度。
+支持 2-4 张图片并排展示，自动对齐高度。图片会自动使用 object-cover 进行完美中心裁剪。
 
-### 数学公式（KaTeX）
+### 嵌入视频
 
-```markdown
-# 行内公式
-$E = mc^2$
-
-# 块级公式
-$$
-\int_{0}^{\infty} e^{-x^2} dx = \frac{\sqrt{\pi}}{2}
-$$
-```
-
-### Mermaid 图表
-
-````markdown
-```mermaid
-graph TD
-    A[开始] --> B{判断}
-    B -->|是| C[执行]
-    B -->|否| D[结束]
-```
-````
-
-### PlantUML 图表
-
-````markdown
-```plantuml
-@startuml
-Alice -> Bob: Hello
-Bob --> Alice: Hi!
-@enduml
-```
-````
-
-## 6. 嵌入视频
-
-你可以在文章中嵌入 YouTube 或 Bilibili 视频：
+#### YouTube 视频
 
 ```html
-<!-- YouTube 视频 -->
 <iframe width="100%" height="468" 
   src="https://www.youtube.com/embed/VIDEO_ID" 
   title="YouTube video player" 
@@ -314,8 +714,11 @@ Bob --> Alice: Hi!
   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
   allowfullscreen>
 </iframe>
+```
 
-<!-- Bilibili 视频 -->
+#### Bilibili 视频
+
+```html
 <iframe width="100%" height="468" 
   src="//player.bilibili.com/player.html?bvid=BV1fK4y1s7Qf&p=1&autoplay=0" 
   scrolling="no" 
@@ -326,9 +729,9 @@ Bob --> Alice: Hi!
 </iframe>
 ```
 
-只需从视频平台复制嵌入代码，粘贴到 Markdown 文件中即可。
+---
 
-## 7. Mermaid 图表详细用法
+## Mermaid 图表
 
 Mermaid 支持多种图表类型，适合展示流程图、时序图、甘特图等。
 
@@ -426,7 +829,9 @@ pie title 网站流量来源
 ```
 ````
 
-## 8. PlantUML 图表详细用法
+---
+
+## PlantUML 图表
 
 PlantUML 适合绘制更专业的工程图表，如活动图、用例图、组件图等。
 
@@ -531,7 +936,9 @@ participant API as 接口
 ```
 ````
 
-## 9. 数学公式（KaTeX）详细用法
+---
+
+## 数学公式 KaTeX
 
 ### 行内公式
 
@@ -599,8 +1006,13 @@ $$
 | $\infty$ | `\infty` | 无穷大 |
 | $\rightarrow$ | `\rightarrow` | 右箭头 |
 | $\partial$ | `\partial` | 偏导数 |
+| $\sum$ | `\sum` | 求和 |
+| $\int$ | `\int` | 积分 |
+| $\sqrt{}$ | `\sqrt{}` | 平方根 |
 
-## 10. 文章加密详细用法
+---
+
+## 文章加密
 
 ### 配置加密
 
@@ -627,7 +1039,9 @@ passwordHint: "提示：我的生日"
 - 提醒框、数学公式、Mermaid 图表
 - 所有高级功能都正常工作
 
-## 11. 草稿功能
+---
+
+## 草稿功能
 
 ### 设置草稿
 
@@ -649,7 +1063,9 @@ draft: true
 
 将 `draft: true` 改为 `draft: false` 即可发布。
 
-## 12. 写作技巧
+---
+
+## 写作技巧
 
 ### 文章结构建议
 
@@ -691,8 +1107,17 @@ draft: true
 - 使用 `showLineNumbers` 显示行号
 - 使用 `{1, 3-5}` 标记重要代码行
 - 长代码使用 `collapse` 折叠不重要的部分
+- 使用 `diff` 语法展示代码变更
 
-## 13. 预览和发布
+### 链接使用建议
+
+- 内部链接使用相对路径：`[关于](/about/)`
+- 外部链接使用完整 URL：`[Google](https://google.com)`
+- 引用式链接适合重复使用的链接
+
+---
+
+## 预览和发布
 
 ### 本地预览
 
@@ -710,7 +1135,51 @@ pnpm build
 
 构建后的文件在 `dist/` 目录，可部署到任何静态托管服务。
 
-## 14. 常见问题
+### 检查和格式化
+
+提交前请运行：
+
+```bash
+pnpm check    # 检查错误
+pnpm format   # 格式化代码
+```
+
+---
+
+## 部署指南
+
+### 平台托管部署
+
+参考 [Astro 官方部署指南](https://docs.astro.build/zh-cn/guides/deploy/) 将博客部署至以下平台：
+
+- **Vercel**
+- **Netlify**
+- **Cloudflare Pages**
+- **EdgeOne Pages**
+- **GitHub Pages**
+
+### Vercel 部署
+
+1. Fork 仓库到你的 GitHub
+2. 在 Vercel 中导入项目
+3. 配置：
+   - 框架预设：`Astro`
+   - 根目录：`./`
+   - 输出目录：`dist`
+   - 构建命令：`pnpm run build`
+   - 安装命令：`pnpm install`
+4. 点击 Deploy
+
+### Netlify 部署
+
+1. Fork 仓库到你的 GitHub
+2. 在 Netlify 中导入项目
+3. 配置同上
+4. 点击 Deploy
+
+---
+
+## 常见问题
 
 ### Q: 如何设置草稿？
 
@@ -726,6 +1195,7 @@ pnpm build
 - 检查路径是否正确
 - 确保图片在 `src/content/posts/` 目录或 `public/` 目录
 - 检查文件名大小写是否匹配
+- 推荐使用 `.avif` 或 `.webp` 格式
 
 ### Q: 如何在文章中嵌入视频？
 
@@ -741,6 +1211,68 @@ pnpm build
 - 行内公式使用 `$...$`
 - 块级公式使用 `$$...$$`
 - 支持 KaTeX 语法和化学方程式（`\ce{}`）
+
+### Q: 如何配置提醒框风格？
+
+在 `src/config/siteConfig.ts` 中配置 `rehypeCallouts.theme`：
+
+```typescript
+rehypeCallouts: {
+  // 选项: "github" | "obsidian" | "vitepress"
+  theme: "github",
+},
+```
+
+**注意：更改配置后需要重启开发服务器才能生效。**
+
+### Q: 如何添加多语言支持？
+
+在文章 front-matter 中设置 `lang` 属性：
+
+```yaml
+---
+title: Hello World
+lang: en
+---
+```
+
+### Q: 如何自定义文章 URL？
+
+使用 `slug` 属性：
+
+```yaml
+---
+title: 我的文章
+slug: my-custom-url
+---
+```
+
+URL 将变为 `/posts/my-custom-url`
+
+### Q: 如何禁用文章评论？
+
+在 front-matter 中设置 `comment: false`：
+
+```yaml
+---
+title: 我的文章
+comment: false
+---
+```
+
+---
+
+## 参考资料
+
+- [Firefly 官方文档](https://docs-firefly.cuteleaf.cn/)
+- [Firefly 在线预览](https://firefly.cuteleaf.cn/)
+- [Firefly GitHub 仓库](https://github.com/CuteLeaf/Firefly)
+- [Astro 官方文档](https://docs.astro.build/)
+- [Tailwind CSS 文档](https://tailwindcss.com/)
+- [Mermaid 文档](https://mermaid.js.org/)
+- [PlantUML 文档](https://plantuml.com/)
+- [KaTeX 文档](https://katex.org/)
+- [Expressive Code 文档](https://expressive-code.com/)
 
 ---
 

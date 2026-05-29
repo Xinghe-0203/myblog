@@ -1,6 +1,6 @@
+import { flattenDiagnosticMessageText } from "typescript";
 import type { SiteConfig } from "@/types/config";
 import { fontConfig } from "./fontConfig";
-import { flattenDiagnosticMessageText } from "typescript";
 
 // 定义站点语言
 // 语言代码，例如：'zh_CN', 'zh_TW', 'en', 'ja', 'ru'。
@@ -17,8 +17,7 @@ export const siteConfig: SiteConfig = {
 	site_url: "https://avatars.githubusercontent.com/u/222407735?v=4",
 
 	// 站点描述
-	description:
-		"一个山东青岛港湾职业技术学院的软件技术学生。",
+	description: "一个山东青岛港湾职业技术学院的软件技术学生。",
 
 	// 站点关键词
 	keywords: [
@@ -74,7 +73,7 @@ export const siteConfig: SiteConfig = {
 		// 2. 本地图片（public目录，不优化）: { type: "image", value: "/assets/images/logo.webp", alt: "Logo" }
 		// 3. 本地图片（src目录，自动优化但会增加构建时间，推荐）: { type: "image", value: "assets/images/logo.webp", alt: "Logo" }
 		// 4. 网络图片: { type: "url", value: "https://example.com/logo.png", alt: "Logo" }
-		
+
 		logo: {
 			type: "icon",
 			value: "material-symbols:rocket-launch-outline",
@@ -178,6 +177,11 @@ export const siteConfig: SiteConfig = {
 		googleAnalyticsId: "",
 		// Microsoft Clarity ID
 		microsoftClarityId: "",
+		// Vercel Web Analytics 配置
+		vercelAnalytics: {
+			// 是否启用 Vercel Web Analytics
+			enabled: false,
+		},
 		// Umami 统计配置
 		umamiAnalytics: {
 			// Umami Website ID

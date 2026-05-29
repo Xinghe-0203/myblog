@@ -14,8 +14,6 @@
   "src:content/posts/images/1.avif": "c0babec4bfc3e0e0de",
   "src:assets/images/firefly.png": "72d3af9ee699aced93",
   "src:assets/images/cover.avif": "7c6f966a628a816e82",
-  "src:assets/images/avatar.avif": "dcd8d5d1cecabea9a9",
-  "src:content/posts/guide/cover.avif": "c8bca9dde6d2babfb5",
   "src:assets/images/MobileWallpaper/m6.avif": "a08eaac3abbfc7bdc8",
   "src:assets/images/MobileWallpaper/m5.avif": "af99aecab1c1d2c2cb",
   "src:assets/images/MobileWallpaper/m4.avif": "f0e1e2d4bfc7c2abc1",
@@ -27,5 +25,7 @@
   "src:assets/images/DesktopWallpaper/d4.avif": "727991b7a7bbe2b8c2",
   "src:assets/images/DesktopWallpaper/d3.avif": "4268936f829e99adc7",
   "src:assets/images/DesktopWallpaper/d2.avif": "b49db67a7e91d0aabc",
-  "src:assets/images/DesktopWallpaper/d1.avif": "8b9bb59ba6bae7d7dd"
+  "src:assets/images/DesktopWallpaper/d1.avif": "8b9bb59ba6bae7d7dd",
+  "src:assets/images/avatar.png": "868893b0b2b7b9beca",
+  "public:assets/images/avatar.png": "868893b0b2b7b9beca"
 }

@@ -37,7 +37,7 @@ export const profileConfig: ProfileConfig = {
 			name: "Email",
 			icon: "fa7-solid:envelope",
 			url: "mailto:zoracn0203@gmail.com",
-			showName:true,
+			showName: true,
 		},
 		// {
 		// 	name: "RSS",

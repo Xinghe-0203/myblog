@@ -1,0 +1,12 @@
+---
+// Vercel Web Analytics component
+// Uses the inject() function for Astro projects without server-side rendering
+// Reference: https://vercel.com/docs/analytics/quickstart
+---
+
+<script>
+	import { inject } from '@vercel/analytics';
+	
+	// Inject analytics when the script loads
+	inject();
+</script>
